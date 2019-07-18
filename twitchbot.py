@@ -50,7 +50,7 @@ class Twitchbot:
             print("{}".format(message))
             
             if "End of /NAMES list" in message:
-                self.send_message("/me Succesfully Joined Channel. Ready to Recieve Commands.")
+                self.send_message("/me Succesfully Joined Channel. Ready to Receive Commands.")
                 self.loading = False
                 #break
         
