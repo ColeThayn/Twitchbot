@@ -8,5 +8,5 @@ Bot detects commands from chat and passes hotkeys to the system.
 
 
 Prerequisites:
--Python 3
--pyautogui
+-Python 3\n
+-pyautogui\n
