@@ -1,15 +1,18 @@
 from time import sleep
 import socket
-import string
+import sys
 from commands import commands
+import pyautogui
 
 s = socket.socket()
+keyboard = pyautogui
 
 class Twitchbot:
 
     def __init__(self, Host, Port, Nick, Pass, Chan):
         global s
         global commands
+        global keyboard
         self.host = Host
         self.port = Port
         self.nick = Nick
@@ -31,14 +34,12 @@ class Twitchbot:
         sleep(1)
         print(self.message)
 
-    def get_user(self):
-        response = s.recv(2048).decode('utf-8')
+    def get_user(self,response):
         readbuffer = response.split("!")
         user = readbuffer[0][1::]
         return str(user)
 
-    def get_message(self):
-        response = s.recv(2048).decode('utf-8')
+    def get_message(self,response):
         seperate = response.split("\r\n")
         temp = ("").join(seperate).strip().split(":",2)[2:]
         message = ("").join(temp)
@@ -46,29 +47,62 @@ class Twitchbot:
 
     def chat(self):
         while self.loading:
-            message = self.get_message()
+            response = s.recv(2048).decode('utf-8')
+            message = self.get_message(response)
             print("{}".format(message))
             
             if "End of /NAMES list" in message:
-                self.send_message("/me Succesfully Joined Channel. Ready to Receive Commands.")
+                self.send_message("/me Succesfully Joined Channel. Ready to Recieve Commands.")
                 self.loading = False
-                #break
-        
+
         while not self.loading:
-            
-            user = self.get_user()
-            message = self.get_message()
+            response = s.recv(2048).decode('utf-8')
+            user = self.get_user(response)
+            message = self.get_message(response)
             print("{} : {}".format(user, message))
             
+            #for static string commands add more in commands.py
             for command in commands.items():
                 if message in command:
                     self.send_message(command[1])
                     continue
+            
+            list = []
+            if "!help" in message:
+                self.send_message("This is the help command, these are the available commands:\n")
+                for i in commands.keys():
+                    list.append(i)
+                sleep(.5)  
+                self.send_message((", ").join(list))   
+            
+            if "PING" in response:
+                print("PING")
+                s.send("PONG".encode("utf-8"))
+                print("PONG")
+                continue
+
+            #Commands that require more action
+            if "!brb" in message:
+                keyboard.keyDown('num1')
+                keyboard.keyUp('num1')
+                continue
+            
+            if "!intermission" in message:
+                keyboard.keyDown("num2")
+                keyboard.keyUp("num2")
+                continue
                     
 
+def run():
+
+    immasylum = Twitchbot("irc.twitch.tv", 6667, "{bot name here}", "oauth:", "#{channel here}")
 
 
+    immasylum.connect()
 
+
+if __name__ == '__main__':
+    run()
 
 
 
