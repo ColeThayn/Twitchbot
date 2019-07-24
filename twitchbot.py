@@ -95,10 +95,10 @@ class Twitchbot:
 
 def run():
 
-    immasylum = Twitchbot("irc.twitch.tv", 6667, "{bot name here}", "oauth:", "#{channel here}")
+    bot = Twitchbot("irc.twitch.tv", 6667, "{bot name here}", "oauth:", "#{channel here}")
 
 
-    immasylum.connect()
+    bot.connect()
 
 
 if __name__ == '__main__':
