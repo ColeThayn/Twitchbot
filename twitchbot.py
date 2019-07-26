@@ -88,7 +88,7 @@ class Twitchbot:
 
 def run():
 
-   bot = Twitchbot("irc.twitch.tv", 6667, "asylumsbot", "oauth:78lihmvosqs5v5summsp3txuqgaban", "#immasylum")
+   bot = Twitchbot("irc.twitch.tv", 6667, "asylumsbot", "oauth:", "#immasylum")
    bot.connect()
 
 
