@@ -1,8 +1,9 @@
 from time import sleep
 import socket
 import sys
-from commands import commands
+from commands import all_commands
 import pyautogui
+
 
 s = socket.socket()
 keyboard = pyautogui
@@ -11,7 +12,7 @@ class Twitchbot:
 
     def __init__(self, Host, Port, Nick, Pass, Chan):
         global s
-        global commands
+        global all_commands
         global keyboard
         self.host = Host
         self.port = Port
@@ -26,7 +27,6 @@ class Twitchbot:
         s.send("PASS {}\r\n".format(self.oath).encode("utf-8"))
         s.send("NICK {}\r\n".format(self.nick).encode("utf-8"))
         s.send("JOIN {}\r\n".format(self.chan).encode("utf-8"))
-        self.chat()
 
     def send_message(self, message):
         self.message = message
@@ -45,6 +45,10 @@ class Twitchbot:
         message = ("").join(temp)
         return str(message)
 
+    def get_response(self):
+        response = s.recv(2048).decode('utf-8')
+        return response
+
     def chat(self):
         while self.loading:
             response = s.recv(2048).decode('utf-8')
@@ -62,7 +66,7 @@ class Twitchbot:
             print("{} : {}".format(user, message))
             
             #for static string commands add more in commands.py
-            for command in commands.items():
+            for command in all_commands.items():
                 if message in command:
                     self.send_message(command[1])
                     continue
@@ -70,7 +74,7 @@ class Twitchbot:
             list = []
             if "!help" in message:
                 self.send_message("This is the help command, these are the available commands:\n")
-                for i in commands.keys():
+                for i in all_commands.keys():
                     list.append(i)
                 sleep(.5)  
                 self.send_message((", ").join(list))   
@@ -80,25 +84,12 @@ class Twitchbot:
                 s.send("PONG".encode("utf-8"))
                 print("PONG")
                 continue
-
-            #Commands that require more action
-            if "!brb" in message:
-                keyboard.keyDown('num1')
-                keyboard.keyUp('num1')
-                continue
-            
-            if "!intermission" in message:
-                keyboard.keyDown("num2")
-                keyboard.keyUp("num2")
-                continue
                     
 
 def run():
 
-    bot = Twitchbot("irc.twitch.tv", 6667, "{bot name here}", "oauth:", "#{channel here}")
-
-
-    bot.connect()
+   bot = Twitchbot("irc.twitch.tv", 6667, "asylumsbot", "oauth:78lihmvosqs5v5summsp3txuqgaban", "#immasylum")
+   bot.connect()
 
 
 if __name__ == '__main__':
