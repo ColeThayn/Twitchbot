@@ -9,11 +9,11 @@ Bot detects commands from chat and passes hotkeys to the system.
 
 Prerequisites:
 
--Python 3
+- Python 3
 
 - OBS Studio
 
--OBS Websocket plugin 
+- OBS Websocket plugin 
 
 - obs-websocket-py
 
