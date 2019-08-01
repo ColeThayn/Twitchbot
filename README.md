@@ -4,7 +4,7 @@ For learning, using sockets library.
 
 
 Chat controlled scenes
-Bot detects commands from chat and passes hotkeys to the system.
+Bot detects commands from chat and controlls obs through a socket connection.
 
 
 Prerequisites:
