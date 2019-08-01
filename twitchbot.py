@@ -2,18 +2,15 @@ from time import sleep
 import socket
 import sys
 from commands import all_commands
-import pyautogui
 
 
 s = socket.socket()
-keyboard = pyautogui
 
 class Twitchbot:
 
     def __init__(self, Host, Port, Nick, Pass, Chan):
         global s
         global all_commands
-        global keyboard
         self.host = Host
         self.port = Port
         self.nick = Nick
@@ -23,16 +20,22 @@ class Twitchbot:
 
 
     def connect(self):
+        """
+        Connects to twitch irc server
+        """
         s.connect((self.host, self.port))
         s.send("PASS {}\r\n".format(self.oath).encode("utf-8"))
         s.send("NICK {}\r\n".format(self.nick).encode("utf-8"))
         s.send("JOIN {}\r\n".format(self.chan).encode("utf-8"))
 
+    def Pong(self,response):
+        self.response = response
+        s.send('PONG'.encode('utf-8'))
+
     def send_message(self, message):
         self.message = message
         s.send("PRIVMSG {} :{}\n".format(self.chan,self.message).encode("utf-8"))
-        sleep(1)
-        print(self.message)
+        
 
     def get_user(self,response):
         readbuffer = response.split("!")
@@ -46,7 +49,7 @@ class Twitchbot:
         return str(message)
 
     def get_response(self):
-        response = s.recv(2048).decode('utf-8')
+        response = s.recv(4096).decode('utf-8')
         return response
 
     def chat(self):
@@ -88,7 +91,7 @@ class Twitchbot:
 
 def run():
 
-   bot = Twitchbot("irc.twitch.tv", 6667, "asylumsbot", "oauth:", "#immasylum")
+   bot = Twitchbot("irc.twitch.tv", 6667, "", "oauth:", "#")
    bot.connect()
 
 

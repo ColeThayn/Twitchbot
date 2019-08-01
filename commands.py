@@ -7,4 +7,4 @@ all_commands = {
     "!brb" : ''
 }
 
-obs_scenes = ['put','scenes','here']
+#obs_scenes = ['put','scenes','here']
