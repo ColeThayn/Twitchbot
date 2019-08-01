@@ -11,5 +11,9 @@ Prerequisites:
 
 -Python 3
 
--pyautogui
+- OBS Studio
+
+-OBS Websocket plugin 
+
+- obs-websocket-py
 
