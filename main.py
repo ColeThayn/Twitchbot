@@ -85,7 +85,10 @@ try:
             print('Me PONG')
             continue
 
-        #commands here
+        #Light commands here 
+        #Bridge('192.168.1.39').connect()
+        #b = Bridge('192.168.1.39')
+        #"b" = Philips hue bridge
         if 'Thank you for the follow!' in message and user == 'asylumsbot':
                 print('True')
                 b.set_light(['left','right', 'celling'], 'on', False)
