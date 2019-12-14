@@ -3,6 +3,11 @@ from obswebsocket import obsws, requests
 from twitchbot import Twitchbot
 from commands import *
 from cfg import *
+from phue import Bridge
+from threading import Timer
+
+Bridge('192.168.1.39').connect()
+b = Bridge('192.168.1.39')
 
 obs_connect = False
 loading = True
@@ -31,7 +36,8 @@ bot.connect()
 ###################
 # laoding message #
 ###################
-print('Attempting to connect to', TB_CHANNEL[1::], 'on Twitch!\n')
+print('***Attempting to connect to', TB_CHANNEL[1::], 'on Twitch!***\n')
+'''
 try:
     while loading:
 
@@ -49,12 +55,16 @@ try:
 
 except KeyboardInterrupt:
     print('Terminated by user.')
-
+'''
     
 #########################################################################################
 # While loop that continously listens to chat, responsible for commands and obs control #
 #########################################################################################
-print('Successfully connected to', TB_CHANNEL[1::] + '!')
+#print('***Successfully joined', TB_CHANNEL[1::] + '!***')
+
+t = Timer(300, bot.Ping)
+t.start()
+
 try:
     while not loading:
     
@@ -70,16 +80,27 @@ try:
 
         #Responds to twitches ping
         if "PING" in not_response:
-            print('PING')
+            print('Twitch PING')
             bot.Pong(not_response)
-            print('PONG')
+            print('Me PONG')
             continue
 
         #commands here
+        if 'Thank you for the follow!' in message and user == 'asylumsbot':
+                print('True')
+                b.set_light(['left','right', 'celling'], 'on', False)
+                sleep(.6)
+                b.set_light(['left','right', 'celling'], 'on', True)
+                sleep(.5)
+                b.set_light(['left','right', 'celling'], 'on', False)
+                sleep(.6)
+                b.set_light(['left','right', 'celling'], 'on', True)
+
+
         #checks if there is a command detected
         if message.startswith('!'):
             #is command
-            print('\tIs Command')
+            print('\tCommand Registered')
             #Takes "!" out of messaage for checking commands
             command = message[1::]
             
@@ -89,16 +110,27 @@ try:
                     bot.send_message(cmd[1])
                 continue
         
-            #help command is seperate it requires more logic that traditional string.
+            #help command is seperate it requires more logic than traditional string.
             commands = []
-            if "help" in command:
+            if "help" == command:
                 for cmds in all_commands.keys():
                     commands.append(cmds)
                 #sleep(.2)
                 bot.send_message('The available commands are: ' + (', ').join(commands) + '\r\n')
-                continue
+            
+            elif "off" == command:
+                b.set_light(['left', 'right'], 'on', False)
 
-            if "connect" in command:
+            elif "on" == command:
+                b.set_light(['left', 'right'], 'on', True)
+
+            elif "blue" == command:
+                b.set_light(['left', 'right'], colors['blue'])
+
+            elif "blue" == command:
+                b.set_light(['left', 'right'], colors['red'])
+
+            elif "connect" == command:
                 try:
                     ws.connect()
                     bot.send_message('Successfully connected to OBS!')
@@ -115,7 +147,7 @@ try:
 
             except BaseException:
                 print("No scene with that name.")
-            continue
+            #continue
 
 except KeyboardInterrupt:
     print('Terminated by user.')
